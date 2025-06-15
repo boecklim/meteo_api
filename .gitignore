@@ -1,3 +1,5 @@
 challenge/
 .venv/
 .idea/
+*.db
+*.ipynb
