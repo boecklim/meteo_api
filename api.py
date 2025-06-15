@@ -11,12 +11,6 @@ app = Flask(__name__)
 
 @app.route('/aemet/start_time/<start_time>/end_time/<end_time>/station/<station>')
 def aemet(start_time: str, end_time: str, station: str):
-    bad_request = 400
-    internal_server_error = 500
-    # only allow “Meteo Station Gabriel de Castilla” => 89070 and “Meteo Station Juan Carlos I” => 89064.
-    if station != "89070" and station != "89064":
-        abort(bad_request, 'only stations allowed are Meteo Station Gabriel de Castilla (89070) and Meteo Station Juan Carlos I (89064)')
-
     query_params = request.args.to_dict(flat=False)
 
     types = ['temp', 'pres', 'vel']
@@ -32,6 +26,18 @@ def aemet(start_time: str, end_time: str, station: str):
         agg_param = query_params.get('agg')
         if len(agg_param) > 0:
             aggregation = agg_param[0]
+
+
+    return get_aemet(start_time, end_time, station, types, aggregation)
+
+
+def get_aemet(start_time: str, end_time: str, station: str, types: list, aggregation: str):
+    bad_request = 400
+    internal_server_error = 500
+    # only allow “Meteo Station Gabriel de Castilla” => 89070 and “Meteo Station Juan Carlos I” => 89064.
+    if station != "89070" and station != "89064":
+        abort(bad_request, 'only stations allowed are Meteo Station Gabriel de Castilla (89070) and Meteo Station Juan Carlos I (89064)')
+
 
     try:
         start = parser.parse(start_time)
