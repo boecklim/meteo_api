@@ -1,23 +1,30 @@
 import sqlite3
-import logging
 import pandas as pd
 from datetime import datetime
 
 def get_meteo_data(start_time: datetime, end_time: datetime, station: str) -> pd.DataFrame:
     conn = sqlite3.connect('meteo_data.db')
-
+    query = f"""
+    select * from meteo_data 
+    where date > '{start_time.strftime("%Y-%m-%d %H:%M:%S")}' 
+    and date < '{end_time.strftime("%Y-%m-%d %H:%M:%S")}' 
+    and station = {station}
+    """
     try:
-        df = pd.read_sql_query(f"select * from meteo_data where date > '{start_time}' and date < '{end_time}' and station = {station}", con=conn)
+        df = pd.read_sql_query(query, con=conn)
     except pd.errors.DatabaseError:
-        logging.error("database doesn't exist")
         return pd.DataFrame()
 
-    df.reset_index()
-    return df.drop(columns=['station'])
+    df['date'] = pd.to_datetime(df['date'], format='ISO8601')
+
+    df.drop(columns=['station'], inplace=True)
+    return df
 
 
 def store_meteo_data(df: pd.DataFrame, station: str):
     conn = sqlite3.connect('meteo_data.db')
-    df['station'] = station
 
-    df.set_index(['station', 'fhora']).to_sql(name='meteo_data', if_exists='append', index=True, con=conn)
+    df_new = pd.DataFrame(df)
+    df_new['station'] = station
+
+    df_new.set_index(['station', 'date']).to_sql(name='meteo_data', if_exists='append', index=True, con=conn)

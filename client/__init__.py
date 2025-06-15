@@ -13,7 +13,7 @@ def get_aemet_data(start_time: str, end_time: str, station: str) -> dict:
         'api_key': key,
     }
 
-    resp = requests.request("GET", url, headers=headers, data=payload)
+    resp = requests.request("GET", url, headers=headers, data=payload, timeout=30)
 
     if resp.status_code != 200:
         abort(resp.status_code, resp.text)
@@ -23,7 +23,7 @@ def get_aemet_data(start_time: str, end_time: str, station: str) -> dict:
     if resp_json['estado'] != 200:
         abort(resp_json['estado'], resp_json['descripcion'])
 
-    resp_data = requests.request("GET", resp_json['datos'], headers=headers, data=payload)
+    resp_data = requests.request("GET", resp_json['datos'], headers=headers, data=payload, timeout=30)
     if resp_data.status_code != 200:
         abort(resp_data.status_code, resp_data.text)
 
