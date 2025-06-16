@@ -3,3 +3,4 @@ challenge/
 .idea/
 *.db
 *.ipynb
+**/__pycache__/**
