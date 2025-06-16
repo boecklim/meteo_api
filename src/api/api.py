@@ -1,11 +1,11 @@
-from client import get_aemet_data
+from src.client.client import get_aemet_data
+from src.store.store import store_meteo_data, get_meteo_data
 import pandas as pd
-from flask import Flask, abort, request
-from dotenv import load_dotenv
+from flask import abort, request
 import numpy as np
-from store import store_meteo_data, get_meteo_data
 from dateutil import parser
-import logging
+# from . import app
+from flask import Flask
 
 app = Flask(__name__)
 
@@ -67,7 +67,6 @@ def get_aemet(start_time: str, end_time: str, station: str, types: list, aggrega
 
         df['date'] = pd.to_datetime(df['fhora'], format='ISO8601')
 
-
         df = df[types + ['date']]
         df.replace('NaN', np.nan, inplace=True)
 
@@ -105,13 +104,3 @@ def get_aemet(start_time: str, end_time: str, station: str, types: list, aggrega
 
     return data
 
-# main driver function
-if __name__ == '__main__':
-    load_dotenv()
-    app.logger.setLevel(logging.INFO)
-
-    app.logger.info('Starting API')
-
-    # run() method of Flask class runs the application
-    # on the local development server.
-    app.run(debug=True)
