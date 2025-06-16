@@ -5,14 +5,15 @@
 - Create a virtual environment `python3 -m venv .venv` (optional)
   - Activate the virtual environment `source .venv/bin/activate`
 - Install all dependencies by running `pip install -r requirements.txt`
-- Copy your AEMET API key to the `API_KEY` variable in the .env file or use the one given
+- Copy your AEMET API key to the `API_KEY` variable in the .env file
 - Run the Meteorological API service with `python main.py`
 - Send a request to the API for example using the following curl command: `curl --location 'http://localhost:5000/aemet/start_time/2025-02-01T00:00:00UTC/end_time/2025-02-01T23:50:00UTC/station/89070?agg=hourly'`
 
 ## Todos left
 
 - Do input validation of query parameters e.g. ignore all values other than 'temp', 'pres', 'vel'
-- Check for each new request whether the data for the whole time range is already stored in the DB. If not, fetch the missing data from the API and store it. 
+- Check for each new request whether the data for the whole time range is already stored in the DB. If not, fetch the missing data from the API and store it.
+- Add more exception handling for different kinds of exceptions
 - Add more test coverage
 - Integration tests for DB queries
 - Add a front end
