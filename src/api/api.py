@@ -65,7 +65,7 @@ def get_aemet(start_time: str, end_time: str, station: str, types: list, aggrega
         df = pd.DataFrame(aemet_data)
         fetched_new_data = True
 
-        df['date'] = pd.to_datetime(df['fhora'], format='ISO8601')
+        df['date'] = pd.to_datetime(df['fhora'], format='ISO8601').dt.tz_convert('UTC')
 
         df = df[types + ['date']]
         df.replace('NaN', np.nan, inplace=True)
